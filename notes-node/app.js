@@ -11,7 +11,15 @@ var command = argv._[0];
 
 const commands = {
     'add' : () => {
-        notes.addNote( argv.title, argv.body );
+        var note = notes.addNote( argv.title, argv.body );
+        if( note ){
+            console.log( 'Added note.' );
+            console.log( '-----' );
+            console.log( `Title: ${note.title}` );
+            console.log( `body: ${note.body}` );
+        } else {
+            console.log( 'Failed to add note - duplicate title' );
+        }
     },
     'remove' : () => {
         notes.removeNote( argv.title );

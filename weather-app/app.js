@@ -1,5 +1,9 @@
-const request = require('request');
+
 const yargs = require('yargs');
+
+// don't need ".js" if it's javascript
+const geocode = require( './geocode/geocode' );
+const weather = require( './weather/weather' );
 
 const argv = yargs
   .options({
@@ -14,28 +18,17 @@ const argv = yargs
   .alias('help', 'h')
   .argv;
 
-  var encodedAddress = encodeURIComponent(argv.address);
-
-request({
-  url: `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}`,
-  json: true
-}, (error, response, body) => {
-
-  if( error ){
-
-    console.log( 'Unable to connect to Google servers.' );
-
-  } else if( body.status === 'ZERO_RESULTS' ){
-
-    console.log( 'Unable to find that address.' );
-
-  } else if( body.status === 'OK' ){
-
-    var data = body.results[0];
-    console.log( `Address: ${JSON.stringify(data.formatted_address)}` );
-    for( var key in data.geometry.location ){
-      console.log( `${key}: ${data.geometry.location[key]}` );
-    }
+geocode.geocodeAddress( argv.address, ( errorMesage, geocodeResults ) => {
+  if( errorMesage ){
+    console.log( errorMesage );
+  } else {
+    weather.getWeather( geocodeResults, ( errorMesage, weatherResults ) => {
+      if( errorMesage ){
+        console.log( errorMesage );
+      } else {
+        var weatherNow = weatherResults.currentWeather;
+        console.log( `It's ${weatherNow.temperature}C (feels like ${weatherNow.apparentTemperature}C) in ${ geocodeResults.address }.` );
+      }
+    });
   }
-
 });

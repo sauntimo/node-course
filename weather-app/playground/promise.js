@@ -7,8 +7,13 @@ var somePromise = new Promise( ( resolve, reject ) => {
 
 });
 
-somePromise.then( ( message ) => {
-  console.log( 'Success: ', message );
-}, ( erorrMessage ) => {
-  console.log( 'Error: ', errorMessage );
-});
+somePromise.then(
+  ( message ) => console.log( 'Success: ', message ),
+  ( errorMessage ) => console.log( 'Error: ', errorMessage )
+);
+
+// somePromise.then( function( value ) {
+//   console.log( 'Resolved: ', value );
+// }, function( reason ) {
+//   console.log( 'Rejected: ', reason );
+// });

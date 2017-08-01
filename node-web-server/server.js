@@ -8,8 +8,6 @@ hbs.registerPartials( __dirname + '/views/partials' );
 app.set( 'view engine', 'hbs' );
 
 // 'middleware'
-
-
 app.use( (req, res, next) => {
   var now = new Date().toString();
   var str_log = `${now}: ${req.method} ${req.url}`;
@@ -40,14 +38,20 @@ hbs.registerHelper( 'screamIt', ( text ) => {
 
 app.get( '/', ( req, res ) => {
   res.render( 'index.hbs', {
-    pageTitle: 'Homepage',
-    welcomeMessage: 'Welcome to my little express site.',
+    pageTitle: 'Welcome',
+    welcomeMessage: `...to my little site, where I am learning how to use Node, Express and Handlebars.`
+  });
+});
+
+app.get( '/projects', ( req, res ) => {
+  res.render( 'projects.hbs', {
+    pageTitle: 'Projects'
   });
 });
 
 app.get( '/about', ( req, res ) => {
   res.render( 'about.hbs', {
-    pageTitle: 'About page',
+    pageTitle: 'About',
   });
 });
 

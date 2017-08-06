@@ -1,7 +1,8 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-
+const express = require('express');
+const bodyParser = require('body-parser');
+const _ = require('lodash');
 const {ObjectId} = require('mongodb');
+
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -12,8 +13,6 @@ const port = process.env.PORT || 5000;
 app.use( bodyParser.json() );
 
 app.post( '/todos', ( req, res ) => {
-  // console.log( req.body );
-
   var todo = new Todo({
     text: req.body.text
   });
@@ -23,7 +22,6 @@ app.post( '/todos', ( req, res ) => {
   }, (e) => {
     res.status(400).send(e);
   });
-
 });
 
 app.get( '/todos', (req, res) => {
@@ -68,6 +66,32 @@ app.delete('/todos/:id', (req, res) => {
   }).catch( (e) => {
     res.status(400).send();
   });
+});
+
+app.patch('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  // limit the properties a user can update
+  var body = _.pick(req.body, ['text', 'completed']);
+  if(!ObjectId.isValid(id)){
+    return res.status(404).send();
+  }
+
+  if( _.isBoolean(body.completed) && body.completed ){
+    body.completedAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, { $set: body }, {new: true}).then((todo) => {
+    if(!todo){
+      return res.status(404).send();
+    }
+    res.send({todo});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+
 });
 
 app.listen( port, () => {

@@ -7,7 +7,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 app.use( bodyParser.json() );
 
@@ -50,6 +50,25 @@ app.get( '/todos/:id', (req, res) => {
     res.send({todo});
   }).catch( (e) => {
     // console.log( 'error: bad request' );
+    res.status(400).send();
+  });
+});
+
+app.delete('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  if(!ObjectId.isValid(id)){
+    console.log('invalid id');
+    return res.status(404).send();
+  }
+
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if(!todo){
+      console.log( 'valid id but not found' );
+      return res.status(404).send();
+    }
+    res.send({todo});
+  }).catch( (e) => {
+    console.log( 'error: bad request' );
     res.status(400).send();
   });
 });

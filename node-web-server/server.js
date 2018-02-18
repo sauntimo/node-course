@@ -55,6 +55,12 @@ app.get( '/about', ( req, res ) => {
   });
 });
 
+app.get( '/travel', ( req, res ) => {
+  res.render( 'travel.hbs', {
+    pageTitle: 'Travel',
+  });
+});
+
 app.get( '/bad', ( req, res ) => {
   res.send({
     errorMessage: 'Bad request'

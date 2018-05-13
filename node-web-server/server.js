@@ -51,13 +51,27 @@ app.get( '/projects', ( req, res ) => {
 
 app.get( '/about', ( req, res ) => {
   res.render( 'about.hbs', {
-    pageTitle: 'About',
+    pageTitle: 'About'
   });
 });
 
 app.get( '/travel', ( req, res ) => {
   res.render( 'travel.hbs', {
-    pageTitle: 'Travel',
+    pageTitle: 'Travel (google maps)'
+  });
+});
+
+app.get( '/travel-mb', ( req, res ) => {
+
+  const jsn_countries = require( './public/js/countries.json' );
+  const jsn_trips = require( './public/js/trips.json' );
+  const emojiFlags = require( 'emoji-flags' );
+
+  res.render( 'travel-mb.hbs', {
+    pageTitle: 'Travel (mapbox)',
+    jsn_countries: JSON.stringify( jsn_countries ),
+    jsn_trips: JSON.stringify( jsn_trips ),
+    emoji_flags: JSON.stringify( emojiFlags.data )
   });
 });
 
